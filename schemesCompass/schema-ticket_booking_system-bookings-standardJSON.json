@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "_id",
+    "bookingId",
+    "bookingStatus",
+    "canBeCancelled",
+    "createdAt",
+    "currency",
+    "event",
+    "isForResale",
+    "isUsed",
+    "passengerName",
+    "passengerPhone",
+    "paymentStatus",
+    "priceAtBooking",
+    "seatNumber",
+    "ticketQRCode",
+    "ticketType",
+    "updatedAt",
+    "user"
+  ],
+  "properties": {
+    "_id": {
+      "$ref": "#/$defs/ObjectId"
+    },
+    "bookingId": {
+      "type": "string"
+    },
+    "bookingStatus": {
+      "type": "string",
+      "enum": ["pending", "confirmed", "cancelled", "refunded"]
+    },
+    "canBeCancelled": {
+      "type": "boolean"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "event": {
+      "$ref": "#/$defs/ObjectId"
+    },
+    "isForResale": {
+      "type": "boolean"
+    },
+    "isUsed": {
+      "type": "boolean"
+    },
+    "passengerName": {
+      "type": "string"
+    },
+    "passengerPhone": {
+      "type": "string"
+    },
+    "paymentStatus": {
+      "type": "string",
+      "enum": ["unpaid", "paid", "failed", "refunded"]
+    },
+    "priceAtBooking": {
+      "type": "number"
+    },
+    "resalePrice": {
+      "type": ["null", "number"]
+    },
+    "resaleStatus": {
+      "type": "string",
+      "enum": ["not_listed", "listed", "reserved", "sold"]
+    },
+    "seatNumber": {
+      "type": "integer"
+    },
+    "ticketQRCode": {
+      "type": "string"
+    },
+    "ticketType": {
+      "type": "string",
+      "enum": ["standard", "vip", "student", "child"]
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "user": {
+      "$ref": "#/$defs/ObjectId"
+    }
+  },
+  "$defs": {
+    "ObjectId": {
+      "type": "object",
+      "properties": {
+        "$oid": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{24}$"
+        }
+      },
+      "required": ["$oid"],
+      "additionalProperties": false
+    }
+  }
+}
