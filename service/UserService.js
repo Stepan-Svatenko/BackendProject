@@ -10,7 +10,7 @@ async function getUsers() {
 }
 
 async function getUserByEmail(email) {
-    return User.findbyEmail(email);
+    return User.findByEmail(email);
 }
 
 async function getUserById(id) {
