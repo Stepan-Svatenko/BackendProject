@@ -9,7 +9,7 @@ async function generateAccessToken(user) {
             role: user.role,
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' }
+        { expiresIn: '15m' },
     );
 }
 
@@ -21,7 +21,7 @@ async function generateRefreshToken(user) {
             role: user.role,
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '7d' },
     );
 }
 

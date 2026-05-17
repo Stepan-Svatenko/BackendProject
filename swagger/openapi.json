@@ -25,8 +25,12 @@
           }
         },
         "responses": {
-          "200": { "description": "Logged in" },
-          "401": { "description": "Invalid credentials" }
+          "200": {
+            "description": "Logged in"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
         }
       }
     },
@@ -44,7 +48,9 @@
           }
         },
         "responses": {
-          "201": { "description": "Created" }
+          "201": {
+            "description": "Created"
+          }
         }
       }
     },
@@ -52,8 +58,12 @@
       "post": {
         "summary": "Refresh access token",
         "responses": {
-          "200": { "description": "New access token" },
-          "401": { "description": "Unauthorized" }
+          "200": {
+            "description": "New access token"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
@@ -61,7 +71,9 @@
       "post": {
         "summary": "Logout",
         "responses": {
-          "200": { "description": "Logged out" }
+          "200": {
+            "description": "Logged out"
+          }
         }
       }
     },
@@ -101,58 +113,94 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Event" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Event"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       },
       "put": {
         "summary": "Update event",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Updated" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Updated"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       },
       "delete": {
         "summary": "Delete event",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Deleted" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       }
     },
     "/bookings": {
       "get": {
         "summary": "Get all bookings",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "List of bookings" }
+          "200": {
+            "description": "List of bookings"
+          }
         }
       },
       "post": {
         "summary": "Create booking",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -164,20 +212,28 @@
           }
         },
         "responses": {
-          "201": { "description": "Created" }
+          "201": {
+            "description": "Created"
+          }
         }
       }
     },
     "/bookings/{id}": {
       "put": {
         "summary": "Update booking",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -191,38 +247,62 @@
           }
         },
         "responses": {
-          "200": { "description": "Updated" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Updated"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       },
       "delete": {
         "summary": "Delete booking",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Deleted" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       }
     },
     "/users": {
       "get": {
         "summary": "Get all users",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
-          "200": { "description": "List of users" }
+          "200": {
+            "description": "List of users"
+          }
         }
       },
       "post": {
         "summary": "Create user",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -234,20 +314,28 @@
           }
         },
         "responses": {
-          "201": { "description": "Created" }
+          "201": {
+            "description": "Created"
+          }
         }
       }
     },
     "/users/{id}": {
       "put": {
         "summary": "Update user",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -261,24 +349,38 @@
           }
         },
         "responses": {
-          "200": { "description": "Updated" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Updated"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       },
       "delete": {
         "summary": "Delete user",
-        "security": [{ "bearerAuth": [] }],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Deleted" },
-          "404": { "description": "Not found" }
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
         }
       }
     }
@@ -287,72 +389,233 @@
     "schemas": {
       "LoginInput": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
-          "email": { "type": "string" },
-          "password": { "type": "string" }
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
         }
       },
       "RegisterInput": {
         "type": "object",
-        "required": ["username", "email", "phone", "password"],
+        "required": [
+          "username",
+          "email",
+          "phone",
+          "password"
+        ],
         "properties": {
-          "username": { "type": "string" },
-          "email": { "type": "string" },
-          "phone": { "type": "string" },
-          "password": { "type": "string" },
-          "role": { "type": "string", "enum": ["user", "admin", "organizer"] },
-          "isBlocked": { "type": "boolean" }
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin",
+              "organizer"
+            ]
+          },
+          "isBlocked": {
+            "type": "boolean"
+          }
         }
       },
       "EventInput": {
         "type": "object",
-        "required": ["title", "description", "venue", "city", "eventDate", "price", "totalSeats", "availableSeats", "status"],
+        "required": [
+          "title",
+          "description",
+          "venue",
+          "city",
+          "eventDate",
+          "price",
+          "totalSeats",
+          "availableSeats",
+          "status"
+        ],
         "properties": {
-          "title": { "type": "string" },
-          "description": { "type": "string" },
-          "venue": { "type": "string" },
-          "city": { "type": "string" },
-          "eventDate": { "type": "string", "format": "date-time" },
-          "price": { "type": "number" },
-          "totalSeats": { "type": "integer" },
-          "availableSeats": { "type": "integer" },
-          "status": { "type": "string", "enum": ["draft", "published", "cancelled", "sold_out"] }
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "venue": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "price": {
+            "type": "number"
+          },
+          "totalSeats": {
+            "type": "integer"
+          },
+          "availableSeats": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "published",
+              "cancelled",
+              "sold_out"
+            ]
+          }
         }
       },
       "BookingInput": {
         "type": "object",
-        "required": ["bookingId", "event", "user", "seatNumber", "ticketType", "bookingStatus", "paymentStatus", "priceAtBooking", "passengerName", "passengerPhone", "ticketQRCode"],
+        "required": [
+          "bookingId",
+          "event",
+          "user",
+          "seatNumber",
+          "ticketType",
+          "bookingStatus",
+          "paymentStatus",
+          "priceAtBooking",
+          "passengerName",
+          "passengerPhone",
+          "ticketQRCode"
+        ],
         "properties": {
-          "bookingId": { "type": "string" },
-          "event": { "type": "string" },
-          "user": { "type": "string" },
-          "seatNumber": { "type": "integer" },
-          "ticketType": { "type": "string", "enum": ["standard", "vip", "student", "child"] },
-          "bookingStatus": { "type": "string", "enum": ["pending", "confirmed", "cancelled", "refunded"] },
-          "paymentStatus": { "type": "string", "enum": ["unpaid", "paid", "failed", "refunded"] },
-          "priceAtBooking": { "type": "number" },
-          "currency": { "type": "string" },
-          "passengerName": { "type": "string" },
-          "passengerPhone": { "type": "string" },
-          "ticketQRCode": { "type": "string" },
-          "isUsed": { "type": "boolean" },
-          "isForResale": { "type": "boolean" },
-          "resalePrice": { "type": ["number", "null"] },
-          "resaleStatus": { "type": "string", "enum": ["not_listed", "listed", "reserved", "sold"] },
-          "canBeCancelled": { "type": "boolean" }
+          "bookingId": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "seatNumber": {
+            "type": "integer"
+          },
+          "ticketType": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "vip",
+              "student",
+              "child"
+            ]
+          },
+          "bookingStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "confirmed",
+              "cancelled",
+              "refunded"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "unpaid",
+              "paid",
+              "failed",
+              "refunded"
+            ]
+          },
+          "priceAtBooking": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "passengerName": {
+            "type": "string"
+          },
+          "passengerPhone": {
+            "type": "string"
+          },
+          "ticketQRCode": {
+            "type": "string"
+          },
+          "isUsed": {
+            "type": "boolean"
+          },
+          "isForResale": {
+            "type": "boolean"
+          },
+          "resalePrice": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "resaleStatus": {
+            "type": "string",
+            "enum": [
+              "not_listed",
+              "listed",
+              "reserved",
+              "sold"
+            ]
+          },
+          "canBeCancelled": {
+            "type": "boolean"
+          }
         }
       },
       "UserInput": {
         "type": "object",
-        "required": ["username", "email", "phone", "passwordHash", "role", "isBlocked"],
+        "required": [
+          "username",
+          "email",
+          "phone",
+          "password",
+          "role",
+          "isBlocked"
+        ],
         "properties": {
-          "username": { "type": "string" },
-          "email": { "type": "string" },
-          "phone": { "type": "string" },
-          "passwordHash": { "type": "string" },
-          "role": { "type": "string", "enum": ["user", "admin", "organizer"] },
-          "isBlocked": { "type": "boolean" }
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "admin",
+              "organizer"
+            ]
+          },
+          "isBlocked": {
+            "type": "boolean"
+          }
         }
       }
     },

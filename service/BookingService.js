@@ -15,12 +15,8 @@ async function createBooking(data) {
                 throw new Error('Event not found');
             }
 
-            if (event.status === 'cancelled') {
-                throw new Error('Event is cancelled');
-            }
-
-            if (event.availableSeats <= 0) {
-                throw new Error('No available seats');
+            if (event.isBookable() === false) {
+                throw new Error('Event is not bookable(sold out or not published)');
             }
 
             if (data.seatNumber > event.totalSeats) {
@@ -42,11 +38,11 @@ async function createBooking(data) {
                 throw new Error('User not found');
             }
 
-            createdBooking = await Booking.create([data], { session }).then((docs) => docs[0]);
+            createdBooking = await Booking.create([data], { session }).then(docs => docs[0]);
 
             event.availableSeats -= 1;
             if (event.availableSeats === 0) {
-                event.status = 'sold_out';
+                event.markSoldOut();
             }
             await event.save({ session });
         });

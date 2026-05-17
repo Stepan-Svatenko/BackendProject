@@ -39,7 +39,23 @@ const BookingSchema = new mongoose.Schema(
         },
         canBeCancelled: { type: Boolean, default: true },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
+
+BookingSchema.methods.isCancelable = function isCancelable() {
+    return this.canBeCancelled && this.bookingStatus !== 'cancelled';
+};
+
+BookingSchema.methods.isPaid = function isPaid() {
+    return this.paymentStatus === 'paid';
+};
+
+BookingSchema.methods.isActive = function isActive() {
+    return ['pending', 'confirmed'].includes(this.bookingStatus);
+};
+
+BookingSchema.statics.findByEvent = function findByEvent(eventId) {
+    return this.find({ event: eventId }).sort({ createdAt: -1 });
+};
 
 module.exports = mongoose.model('Booking', BookingSchema);

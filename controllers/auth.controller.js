@@ -1,11 +1,13 @@
+const bcrypt = require('bcryptjs');
 const authService = require('../service/AuthService');
 const userService = require('../service/UserService');
-const bcrypt = require('bcryptjs');
 
 async function login(req, res) {
     try {
         const user = await userService.getUserByEmail(req.body.email);
         if (!user) return res.status(401).send('Invalid credentials');
+        if (user.isBlocked) return res.status(403).send('Account is blocked');
+
         const validPassword = await bcrypt.compare(req.body.password, user.passwordHash);
         if (!validPassword) return res.status(401).send('Invalid credentials');
         const accessToken = await authService.generateAccessToken(user);
@@ -13,10 +15,10 @@ async function login(req, res) {
         await authService.saveRefreshToken(
             refreshToken,
             user._id,
-            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         );
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.json({ accessToken });
+        return res.json({ accessToken });
     } catch (err) {
         return res.status(400).send(err.message);
     }
@@ -33,13 +35,13 @@ async function logout(req, res) {
 
 async function refresh(req, res) {
     try {
-        const refreshToken = req.cookies.refreshToken;
+        const { refreshToken } = req.cookies;
         if (!refreshToken) return res.status(401).send('Unauthorized');
         const user = await authService.refreshAccessToken(refreshToken);
         if (!user) return res.status(401).send('Unauthorized');
         const accessToken = await authService.generateAccessToken(user);
         res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.json({ accessToken });
+        return res.json({ accessToken });
     } catch (err) {
         return res.status(400).send(err.message);
     }
@@ -60,11 +62,15 @@ async function register(req, res) {
             email: req.body.email,
             phone: req.body.phone,
             passwordHash,
-            role: req.body.role,
-            isBlocked: req.body.isBlocked ?? false,
+            role: 'user',
+            isBlocked: false,
         });
         if (!user) return res.status(400).send('Failed to create user');
-        return res.status(201).json(user);
+
+        const safeUser = user.toObject ? user.toObject() : user;
+        delete safeUser.passwordHash;
+
+        return res.status(201).json(safeUser);
     } catch (err) {
         return res.status(400).send(err.message);
     }

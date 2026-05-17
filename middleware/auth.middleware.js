@@ -11,10 +11,13 @@ function authMiddleware(req, res, next) {
     try {
         const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
         req.user = payload;
+        req.isAdmin = payload.role === 'admin';
+        req.isSelf = payload.sub === req.params.id;
+
         return next();
     } catch (err) {
         return res.status(401).send('Unauthorized');
     }
 }
-// bcrypt.hash('secret123', 10)
+
 module.exports = authMiddleware;

@@ -6,7 +6,7 @@
     "start": "nodemon ./bin/www",
     "test": "cross-env NODE_ENV=test jest",
     "test:cover": "cross-env NODE_ENV=test jest --coverage",
-    "lint": "eslint --ext .js",
+    "lint": "eslint .",
     "lint:fix": "eslint ./ --fix --ext .js"
   },
   "dependencies": {

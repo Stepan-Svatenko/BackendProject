@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const swaggerUi = require('swagger-ui-express');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/api-users');
 const eventsRouter = require('./routes/events');
@@ -11,7 +12,6 @@ const bookingsRouter = require('./routes/bookings');
 const authRouter = require('./routes/auth');
 const authMiddleware = require('./middleware/auth.middleware');
 
-const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger/openapi.json');
 
 const app = express();

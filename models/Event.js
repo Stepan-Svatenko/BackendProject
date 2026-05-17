@@ -17,7 +17,23 @@ const EventSchema = new mongoose.Schema(
             default: 'draft',
         },
     },
-    { timestamps: true }
+    { timestamps: true },
 );
+
+EventSchema.methods.hasAvailableSeats = function hasAvailableSeats() {
+    return this.availableSeats > 0;
+};
+
+EventSchema.methods.isBookable = function isBookable() {
+    return this.status === 'published' && this.hasAvailableSeats();
+};
+
+EventSchema.methods.markSoldOut = function markSoldOut() {
+    this.status = 'sold_out';
+};
+
+EventSchema.statics.findPublished = function findPublished() {
+    return this.find({ status: 'published' }).sort({ eventDate: 1 });
+};
 
 module.exports = mongoose.model('Event', EventSchema);
