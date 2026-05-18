@@ -316,11 +316,40 @@
         "responses": {
           "201": {
             "description": "Created"
+          },
+          "400": {
+            "description": "Invalid input"
           }
         }
       }
     },
     "/users/{id}": {
+      "get": {
+        "summary": "Get user by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
       "put": {
         "summary": "Update user",
         "security": [
@@ -352,8 +381,14 @@
           "200": {
             "description": "Updated"
           },
+          "400": {
+            "description": "Invalid input"
+          },
           "404": {
             "description": "Not found"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       },
@@ -377,6 +412,9 @@
         "responses": {
           "200": {
             "description": "Deleted"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not found"

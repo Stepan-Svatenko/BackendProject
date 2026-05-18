@@ -3,7 +3,14 @@ const userService = require('../service/UserService');
 
 async function listUsers(req, res) {
     const users = await userService.getUsers();
-    return res.json(users);
+    if (req.isAdmin) return res.json(users);
+    return res.json(
+        users.map(user => ({
+            user_name: user.username,
+            user_id: user._id,
+            user_mail: user.email
+        }))
+    );
 }
 
 async function hashPassword(password, saltRounds = 10) {
@@ -12,8 +19,19 @@ async function hashPassword(password, saltRounds = 10) {
 
 async function getUser(req, res) {
     const user = await userService.getUserById(req.params.id);
+
     if (!user) return res.status(404).send('Not found');
-    return res.json(user);
+    if (req.isAdmin) return res.json(user);
+    if (!req.isSelf) return res.status(403).send('Forbidden');
+
+    return res.json({
+        user_name: user.username,
+        user_id: user._id,
+        user_mail: user.email,
+        user_role: user.role,
+        user_blocked: user.isBlocked,
+        user_phone: user.phone
+    });
 }
 
 async function createUser(req, res) {
@@ -21,6 +39,10 @@ async function createUser(req, res) {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.status(400).send('Empty body');
         }
+        if (!req.isAdmin) {
+            return res.status(403).send('Forbidden');
+        }
+
         const payload = { ...req.body };
 
         if (payload.password && !payload.passwordHash) {
