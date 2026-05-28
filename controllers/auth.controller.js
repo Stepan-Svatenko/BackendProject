@@ -1,79 +1,82 @@
 const bcrypt = require('bcryptjs');
 const authService = require('../service/AuthService');
 const userService = require('../service/UserService');
+const asyncHandler = require('../utils/asyncHandler');
+const AppError = require('../utils/AppError');
 
 async function login(req, res) {
-    try {
-        const user = await userService.getUserByEmail(req.body.email);
-        if (!user) return res.status(401).send('Invalid credentials');
-        if (user.isBlocked) return res.status(403).send('Account is blocked');
-
-        const validPassword = await bcrypt.compare(req.body.password, user.passwordHash);
-        if (!validPassword) return res.status(401).send('Invalid credentials');
-        const accessToken = await authService.generateAccessToken(user);
-        const refreshToken = await authService.generateRefreshToken(user);
-        await authService.saveRefreshToken(
-            refreshToken,
-            user._id,
-            new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        );
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        return res.json({ accessToken });
-    } catch (err) {
-        return res.status(400).send(err.message);
+    const user = await userService.getUserByEmail(req.body.email);
+    if (!user) {
+        throw new AppError('Invalid credentials', 401);
     }
+    if (user.isBlocked) {
+        throw new AppError('Account is blocked', 403);
+    }
+
+    const validPassword = await bcrypt.compare(req.body.password, user.passwordHash);
+    if (!validPassword) {
+        throw new AppError('Invalid credentials', 401);
+    }
+    const accessToken = await authService.generateAccessToken(user);
+    const refreshToken = await authService.generateRefreshToken(user);
+    await authService.saveRefreshToken(
+        refreshToken,
+        user._id,
+        new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    );
+    res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    return res.json({ accessToken });
 }
 
 async function logout(req, res) {
-    try {
-        res.clearCookie('refreshToken');
-        return res.send('Logged out');
-    } catch (err) {
-        return res.status(400).send(err.message);
-    }
+    res.clearCookie('refreshToken');
+    return res.send('Logged out');
 }
 
 async function refresh(req, res) {
-    try {
-        const { refreshToken } = req.cookies;
-        if (!refreshToken) return res.status(401).send('Unauthorized');
-        const user = await authService.refreshAccessToken(refreshToken);
-        if (!user) return res.status(401).send('Unauthorized');
-        const accessToken = await authService.generateAccessToken(user);
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        return res.json({ accessToken });
-    } catch (err) {
-        return res.status(400).send(err.message);
+    const { refreshToken } = req.cookies;
+    if (!refreshToken) {
+        throw new AppError('Unauthorized', 401);
     }
+    const user = await authService.refreshAccessToken(refreshToken);
+    if (!user) {
+        throw new AppError('Unauthorized', 401);
+    }
+    const accessToken = await authService.generateAccessToken(user);
+    res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    return res.json({ accessToken });
 }
 
 async function register(req, res) {
-    try {
-        if (!req.body || Object.keys(req.body).length === 0) {
-            return res.status(400).send('Empty body');
-        }
-        if (!req.body.password) {
-            return res.status(400).send('Password is required');
-        }
-
-        const passwordHash = await bcrypt.hash(req.body.password, 10);
-        const user = await userService.createUser({
-            username: req.body.username,
-            email: req.body.email,
-            phone: req.body.phone,
-            passwordHash,
-            role: 'user',
-            isBlocked: false,
-        });
-        if (!user) return res.status(400).send('Failed to create user');
-
-        const safeUser = user.toObject ? user.toObject() : user;
-        delete safeUser.passwordHash;
-
-        return res.status(201).json(safeUser);
-    } catch (err) {
-        return res.status(400).send(err.message);
+    if (!req.body || Object.keys(req.body).length === 0) {
+        throw new AppError('Empty body', 400);
     }
+    if (!req.body.password) {
+        throw new AppError('Password is required', 400);
+    }
+
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    const user = await userService.createUser({
+        username: req.body.username,
+        email: req.body.email,
+        phone: req.body.phone,
+        passwordHash,
+        role: 'user',
+        isBlocked: false,
+    });
+    if (!user) {
+        throw new AppError('Failed to create user', 400);
+    }
+
+    const safeUser = user.toObject ? user.toObject() : user;
+    delete safeUser.passwordHash;
+
+    return res.status(201).json(safeUser);
 }
 
-module.exports = { login, logout, refresh, register };
+module.exports = {
+    login: asyncHandler(login),
+    logout: asyncHandler(logout),
+    refresh: asyncHandler(refresh),
+    register: asyncHandler(register),
+};

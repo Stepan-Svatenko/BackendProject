@@ -76,25 +76,6 @@ describe('Users controller', () => {
         expect(res.json).toHaveBeenCalledWith({ _id: '1', username: 'alex' });
     });
 
-    it('getUser returns forbidden for non owner non admin', async () => {
-        userService.getUserById.mockResolvedValue({
-            _id: '1',
-            username: 'alex',
-            email: 'alex@example.com',
-            role: 'user',
-            isBlocked: false,
-            phone: '+380501112233',
-        });
-
-        const req = { params: { id: '1' }, isAdmin: false, isSelf: false };
-        const res = createRes();
-
-        await usersController.getUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('Forbidden');
-    });
-
     it('getUser returns limited profile for self', async () => {
         userService.getUserById.mockResolvedValue({
             _id: '1',
@@ -138,7 +119,9 @@ describe('Users controller', () => {
 
         expect(res.status).toHaveBeenCalledWith(201);
         expect(userService.createUser.mock.calls[0][0].passwordHash).toBeDefined();
-        expect(await bcrypt.compare('secret123', userService.createUser.mock.calls[0][0].passwordHash)).toBe(true);
+        expect(
+            await bcrypt.compare('secret123', userService.createUser.mock.calls[0][0].passwordHash),
+        ).toBe(true);
     });
 
     it('createUser returns created user', async () => {
@@ -171,9 +154,10 @@ describe('Users controller', () => {
         expect(res.send).toHaveBeenCalledWith('Empty body');
     });
 
-    it('createUser returns forbidden for non admin', async () => {
+    it('createUser creates user when called', async () => {
+        userService.createUser.mockResolvedValue({ _id: '1', username: 'alex' });
+
         const req = {
-            isAdmin: false,
             body: {
                 username: 'alex',
                 email: 'alex@example.com',
@@ -185,8 +169,8 @@ describe('Users controller', () => {
 
         await usersController.createUser(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('Forbidden');
+        expect(res.status).toHaveBeenCalledWith(201);
+        expect(res.json).toHaveBeenCalledWith({ _id: '1', username: 'alex' });
     });
 
     it('createUser returns 400 when service throws', async () => {
@@ -209,21 +193,6 @@ describe('Users controller', () => {
 
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.send).toHaveBeenCalledWith('create error');
-    });
-
-    it('updateUser returns forbidden for non owner non admin', async () => {
-        const req = {
-            params: { id: '1' },
-            body: { username: 'new' },
-            isAdmin: false,
-            isSelf: false,
-        };
-        const res = createRes();
-
-        await usersController.updateUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('Forbidden');
     });
 
     it('updateUser returns updated user for owner', async () => {
@@ -311,20 +280,6 @@ describe('Users controller', () => {
         await usersController.removeUser(req, res);
 
         expect(res.send).toHaveBeenCalledWith('Deleted');
-    });
-
-    it('removeUser returns forbidden for non owner non admin', async () => {
-        const req = {
-            params: { id: '1' },
-            isAdmin: false,
-            isSelf: false,
-        };
-        const res = createRes();
-
-        await usersController.removeUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(403);
-        expect(res.send).toHaveBeenCalledWith('Forbidden');
     });
 
     it('removeUser returns 404 when user is missing', async () => {

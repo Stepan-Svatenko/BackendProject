@@ -57,7 +57,7 @@ describe('Events controller', () => {
     });
 
     it('createEvent returns 400 for empty body', async () => {
-        const req = { body: {} };
+        const req = { body: {}, isAdmin: true };
         const res = createRes();
 
         await eventsController.createEvent(req, res);
@@ -66,10 +66,20 @@ describe('Events controller', () => {
         expect(res.send).toHaveBeenCalledWith('Empty body');
     });
 
+    it('createEvent returns forbidden for non admin', async () => {
+        const req = { body: { title: 'Rock Concert' }, isAdmin: false };
+        const res = createRes();
+
+        await eventsController.createEvent(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(403);
+        expect(res.send).toHaveBeenCalledWith('Forbidden');
+    });
+
     it('createEvent returns created event', async () => {
         eventService.createEvent.mockResolvedValue({ _id: '1', title: 'Rock Concert' });
 
-        const req = { body: { title: 'Rock Concert' } };
+        const req = { body: { title: 'Rock Concert' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.createEvent(req, res);
@@ -83,7 +93,7 @@ describe('Events controller', () => {
             throw new Error('create error');
         });
 
-        const req = { body: { title: 'Test' } };
+        const req = { body: { title: 'Test' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.createEvent(req, res);
@@ -95,7 +105,7 @@ describe('Events controller', () => {
     it('updateEvent returns updated event', async () => {
         eventService.updateEvent.mockResolvedValue({ title: 'Updated event' });
 
-        const req = { params: { id: '1' }, body: { title: 'Updated event' } };
+        const req = { params: { id: '1' }, body: { title: 'Updated event' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.updateEvent(req, res);
@@ -108,7 +118,7 @@ describe('Events controller', () => {
             throw new Error('update error');
         });
 
-        const req = { params: { id: '1' }, body: { title: 'Updated event' } };
+        const req = { params: { id: '1' }, body: { title: 'Updated event' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.updateEvent(req, res);
@@ -120,7 +130,7 @@ describe('Events controller', () => {
     it('updateEvent returns 404 when event is missing', async () => {
         eventService.updateEvent.mockResolvedValue(null);
 
-        const req = { params: { id: '1' }, body: { title: 'Updated event' } };
+        const req = { params: { id: '1' }, body: { title: 'Updated event' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.updateEvent(req, res);
@@ -129,10 +139,20 @@ describe('Events controller', () => {
         expect(res.send).toHaveBeenCalledWith('Not found');
     });
 
+    it('updateEvent returns forbidden for non admin', async () => {
+        const req = { params: { id: '1' }, body: { title: 'Updated event' }, isAdmin: false };
+        const res = createRes();
+
+        await eventsController.updateEvent(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(403);
+        expect(res.send).toHaveBeenCalledWith('Forbidden');
+    });
+
     it('removeEvent returns Deleted', async () => {
         eventService.removeEvent.mockResolvedValue({ _id: '1' });
 
-        const req = { params: { id: '1' } };
+        const req = { params: { id: '1' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.removeEvent(req, res);
@@ -143,12 +163,22 @@ describe('Events controller', () => {
     it('removeEvent returns 404 when missing', async () => {
         eventService.removeEvent.mockResolvedValue(null);
 
-        const req = { params: { id: '1' } };
+        const req = { params: { id: '1' }, isAdmin: true };
         const res = createRes();
 
         await eventsController.removeEvent(req, res);
 
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.send).toHaveBeenCalledWith('Not found');
+    });
+
+    it('removeEvent returns forbidden for non admin', async () => {
+        const req = { params: { id: '1' }, isAdmin: false };
+        const res = createRes();
+
+        await eventsController.removeEvent(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(403);
+        expect(res.send).toHaveBeenCalledWith('Forbidden');
     });
 });

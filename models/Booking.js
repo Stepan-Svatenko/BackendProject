@@ -2,10 +2,16 @@ const mongoose = require('mongoose');
 
 const BookingSchema = new mongoose.Schema(
     {
-        bookingId: { type: String, required: true, unique: true, trim: true },
+        bookingId: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            default: () => `BK-${Date.now()}`,
+        },
         event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event', required: true },
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-        seatNumber: { type: Number, required: true, min: 1 },
+        ticketCount: { type: Number, required: true, min: 1, default: 1 },
         ticketType: {
             type: String,
             required: true,
@@ -24,11 +30,12 @@ const BookingSchema = new mongoose.Schema(
             enum: ['unpaid', 'paid', 'failed', 'refunded'],
             default: 'unpaid',
         },
-        priceAtBooking: { type: Number, required: true, min: 0 },
+        priceAtBooking: { type: Number, min: 0 },
+        totalPrice: { type: Number, min: 0 },
         currency: { type: String, required: true, default: 'UAH', trim: true },
         passengerName: { type: String, required: true, trim: true },
         passengerPhone: { type: String, required: true, trim: true },
-        ticketQRCode: { type: String, required: true, trim: true },
+        ticketQRCode: { type: String, trim: true, default: () => `QR-${Date.now()}` },
         isUsed: { type: Boolean, default: false },
         isForResale: { type: Boolean, default: false },
         resalePrice: { type: Number, default: null, min: 0 },

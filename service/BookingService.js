@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Booking = require('../models/Booking');
 const Event = require('../models/Event');
-const User = require('../models/User');
 
 async function createBooking(data) {
     const session = await mongoose.startSession();
@@ -19,28 +18,30 @@ async function createBooking(data) {
                 throw new Error('Event is not bookable(sold out or not published)');
             }
 
-            if (data.seatNumber > event.totalSeats) {
-                throw new Error('Seat number exceeds event capacity');
+            const ticketCount = Number(data.ticketCount ?? 1);
+            if (!Number.isInteger(ticketCount) || ticketCount < 1) {
+                throw new Error('Invalid ticket count');
+            }
+            if (ticketCount > event.availableSeats) {
+                throw new Error('Not enough available seats');
             }
 
-            const existingSeat = await Booking.findOne({
-                event: event._id,
-                seatNumber: data.seatNumber,
-                bookingStatus: { $ne: 'cancelled' },
-            }).session(session);
+            const totalPrice = Number(event.price) * ticketCount;
+            const bookingPayload = {
+                ...data,
+                user: data.user,
+                ticketCount,
+                priceAtBooking: event.price,
+                totalPrice,
+                currency: data.currency || 'UAH',
+                ticketQRCode: `QR-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            };
 
-            if (existingSeat) {
-                throw new Error('Seat already booked');
-            }
+            createdBooking = await Booking.create([bookingPayload], { session }).then(
+                docs => docs[0],
+            );
 
-            const user = await User.findById(data.user).session(session);
-            if (!user) {
-                throw new Error('User not found');
-            }
-
-            createdBooking = await Booking.create([data], { session }).then(docs => docs[0]);
-
-            event.availableSeats -= 1;
+            event.availableSeats -= ticketCount;
             if (event.availableSeats === 0) {
                 event.markSoldOut();
             }
@@ -53,8 +54,9 @@ async function createBooking(data) {
     }
 }
 
-async function getBookings() {
-    return Booking.find().populate('event').populate('user').sort({ createdAt: -1 });
+async function getBookings(userId = null, isAdmin = false) {
+    const query = isAdmin || !userId ? {} : { user: userId };
+    return Booking.find(query).populate('event').populate('user').sort({ createdAt: -1 });
 }
 
 async function getBookingById(id) {

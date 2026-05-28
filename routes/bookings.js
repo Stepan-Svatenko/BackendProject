@@ -1,4 +1,6 @@
 const express = require('express');
+const authMiddleware = require('../middleware/auth.middleware');
+const { requireAdmin } = require('../middleware/access.middleware');
 const {
     listBookings,
     getBooking,
@@ -9,10 +11,10 @@ const {
 
 const router = express.Router();
 
-router.get('/', listBookings);
-router.get('/:id', getBooking);
-router.post('/', createBooking);
-router.put('/:id', updateBooking);
-router.delete('/:id', removeBooking);
+router.post('/', authMiddleware, createBooking);
+router.get('/', authMiddleware, listBookings);
+router.get('/:id', authMiddleware, getBooking);
+router.put('/:id', authMiddleware, requireAdmin, updateBooking);
+router.delete('/:id', authMiddleware, requireAdmin, removeBooking);
 
 module.exports = router;
